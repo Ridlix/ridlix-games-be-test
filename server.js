@@ -1,13 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const morgan = require('morgan');
 const helmet = require('helmet');
 const ridlixGameTokenRouter = require('./routes/ridlixGameToken');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(morgan('dev'));
 app.use(helmet());
 
 // This is only for local development and easy testing
