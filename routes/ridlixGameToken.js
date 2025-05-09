@@ -1,7 +1,7 @@
 // Server-side code (Node.js/Express)
 const express = require('express');
 const router = express.Router();
-const fetch = require('node-fetch');
+const axios = require('axios'); // Make sure this package is installed
 
 // Your Ridlix Game credentials (store in environment variables)
 const RIDLIX_API_KEY = 'key_20b2124905c556af9e61ee40c529133d';
@@ -40,22 +40,24 @@ async function handleRidlixGameTokenRequest(req, res) {
 			} catch (e) {}
 		}
 
-		// Request token from Ridlix API
-		const response = await fetch(`${RIDLIX_API_URL}/sessions/token`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-API-Key': RIDLIX_API_KEY,
-				Origin: origin, // Forward the origin header
-			},
-			body: JSON.stringify({
+		// Request token from Ridlix API using axios
+		const response = await axios.post(
+			`${RIDLIX_API_URL}/sessions/token`,
+			{
 				clientId: RIDLIX_CLIENT_ID,
 				gameId: gameId,
-				origin: origin, // Also include in request body
-			}),
-		});
+				origin: origin, // Include in request body
+			},
+			{
+				headers: {
+					'Content-Type': 'application/json',
+					'X-API-Key': RIDLIX_API_KEY,
+					Origin: origin, // Forward the origin header
+				},
+			}
+		);
 
-		const data = await response.json();
+		const data = response.data;
 
 		if (data.status !== 'success') {
 			return res
